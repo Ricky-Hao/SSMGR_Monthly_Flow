@@ -1,6 +1,5 @@
 import argparse
 import json
-import smtplib
 import sqlite3
 from datetime import datetime
 from email.header import Header
@@ -66,7 +65,7 @@ if __name__ == '__main__':
                    '<tr><th align="left">邮箱</th><th align="left">端口</th><th align="left">用量</th></tr>\n'
             data += pretty(row, args.email)
             data += '</table></body></html>'
-            send_mail(args.month, data[0], config)
+            send_mail(args.month, row[0], config)
     else:
         data = ''
         for row in getMonthlyFlow(args.month):
