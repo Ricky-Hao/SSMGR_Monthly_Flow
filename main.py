@@ -31,15 +31,17 @@ def pretty(data, email=False):
         return '{email:30s}|{port:10d}|{usage:6.2f}G\n'.format(email=data[0], port=data[1], usage=data[2])
 
 
-def send_mail(usage, month, email, config):
+def send_mail(month, email, config):
     message = MIMEText(data, 'html')
     message['Subject'] = Header('SSMGR {0} 月用量'.format(month))
     message['From'] = config.get('mail_user')
     message['To'] = email
 
-    smtp = smtplib.SMTP_SSL(config.get('mail_host'), config.get('mail_port'))
-    smtp.login(config.get('mail_user'), config.get('mail_pass'))
-    smtp.sendmail(config.get('mail_user'), email, message.as_string())
+    #smtp = smtplib.SMTP_SSL(config.get('mail_host'), config.get('mail_port'))
+    #smtp.login(config.get('mail_user'), config.get('mail_pass'))
+    #smtp.sendmail(config.get('mail_user'), email, message.as_string())
+    print(message.as_string())
+    print(email)
 
 
 if __name__ == '__main__':
@@ -59,18 +61,16 @@ if __name__ == '__main__':
         config = json.load(f)
 
     if args.email:
-        data = '<html><body><table border="0">\n' \
-               '<tr><th align="left">邮箱</th><th align="left">端口</th><th align="left">用量</th></tr>\n'
+        for row in getMonthlyFlow(args.month):
+            data = '<html><body><table border="0">\n' \
+                   '<tr><th align="left">邮箱</th><th align="left">端口</th><th align="left">用量</th></tr>\n'
+            data += pretty(row, args.email)
+            data += '</table></body></html>'
+            send_mail(args.month, data[0], config)
     else:
         data = ''
-
-    for row in getMonthlyFlow(args.month):
-        data += pretty(row, args.email)
-
-    if args.email:
-        data += '</table></body></html>'
-        send_mail(data, args.month)
-    else:
+        for row in getMonthlyFlow(args.month):
+            data += pretty(row, args.email)
         print(data)
 
     cursor.close()
