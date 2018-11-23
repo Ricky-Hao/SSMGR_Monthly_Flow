@@ -1,5 +1,6 @@
 import argparse
 import json
+import smtplib
 import sqlite3
 from datetime import datetime
 from email.header import Header
@@ -36,11 +37,9 @@ def send_mail(month, email, config):
     message['From'] = config.get('mail_user')
     message['To'] = email
 
-    #smtp = smtplib.SMTP_SSL(config.get('mail_host'), config.get('mail_port'))
-    #smtp.login(config.get('mail_user'), config.get('mail_pass'))
-    #smtp.sendmail(config.get('mail_user'), email, message.as_string())
-    print(message.as_string())
-    print(email)
+    smtp = smtplib.SMTP_SSL(config.get('mail_host'), config.get('mail_port'))
+    smtp.login(config.get('mail_user'), config.get('mail_pass'))
+    smtp.sendmail(config.get('mail_user'), email, message.as_string())
 
 
 if __name__ == '__main__':
