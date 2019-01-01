@@ -9,6 +9,9 @@ from email.mime.text import MIMEText
 
 def getMonthlyFlow(month):
     year = datetime.now().year
+    if month == 0:
+        year = year - 1
+        month = 12
     begin_date = '{0}-{1}'.format(year, month)
     begin_timestamp = datetime.strptime(begin_date, '%Y-%m').timestamp() * 1000
     end_date = '{0}-{1}'.format(year, month + 1)
