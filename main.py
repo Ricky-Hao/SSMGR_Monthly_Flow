@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='获取指定月份的SSMGR流量情况')
     parser.add_argument('-y', dest='year', metavar='year', type=int, nargs='?', default=last_date.year, help='查询年份')
-    parser.add_argument('-m', dest='month', metavar='month', type=int, nargs='?', default=last_date.year, help='查询月份')
+    parser.add_argument('-m', dest='month', metavar='month', type=int, nargs='?', default=last_date.month, help='查询月份')
     parser.add_argument('-d', dest='db', metavar='database', type=str, nargs='?', default='webgui.sqlite',
                         help='WebGUI数据库')
     parser.add_argument('-e', dest='email', action='store_true', default=False, help='是否邮件发送')
