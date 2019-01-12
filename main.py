@@ -1,17 +1,14 @@
 import argparse
+import calendar
 import json
 import smtplib
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 from email.header import Header
 from email.mime.text import MIMEText
 
 
-def getMonthlyFlow(month):
-    year = datetime.now().year
-    if month == 0:
-        year = year - 1
-        month = 12
+def getMonthlyFlow(year, month):
     begin_date = '{0}-{1}'.format(year, month)
     begin_timestamp = datetime.strptime(begin_date, '%Y-%m').timestamp() * 1000
     end_date = '{0}-{1}'.format(year, month + 1)
@@ -46,10 +43,14 @@ def send_mail(month, email, config):
 
 
 if __name__ == '__main__':
-    month = datetime.now().month - 1
+    now = datetime.now()
+    date = datetime.strptime('{0}-{1}'.format(now.year, now.month), '%Y-%m')
+    days = calendar.monthrange(date.year, date.month)[1]
+    last_date = date - timedelta(days=days)
 
     parser = argparse.ArgumentParser(description='获取指定月份的SSMGR流量情况')
-    parser.add_argument('-m', dest='month', metavar='month', type=int, nargs='?', default=month, help='查询月份')
+    parser.add_argument('-y', dest='year', metavar='year', type=int, nargs='?', default=last_date.year, help='查询年份')
+    parser.add_argument('-m', dest='month', metavar='month', type=int, nargs='?', default=last_date.year, help='查询月份')
     parser.add_argument('-d', dest='db', metavar='database', type=str, nargs='?', default='webgui.sqlite',
                         help='WebGUI数据库')
     parser.add_argument('-e', dest='email', action='store_true', default=False, help='是否邮件发送')
@@ -62,7 +63,7 @@ if __name__ == '__main__':
         config = json.load(f)
 
     if args.email:
-        for row in getMonthlyFlow(args.month):
+        for row in getMonthlyFlow(args.year, args.month):
             data = '<html><body><table border="0">\n' \
                    '<tr><th align="left">邮箱</th><th align="left">端口</th><th align="left">用量</th></tr>\n'
             data += pretty(row, args.email)
