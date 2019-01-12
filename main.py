@@ -71,7 +71,7 @@ if __name__ == '__main__':
             send_mail(args.month, row[0], config)
     else:
         data = ''
-        for row in getMonthlyFlow(args.month):
+        for row in getMonthlyFlow(args.year, args.month):
             data += pretty(row, args.email)
         print(data)
 
