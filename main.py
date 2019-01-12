@@ -9,10 +9,11 @@ from email.mime.text import MIMEText
 
 
 def getMonthlyFlow(year, month):
-    begin_date = '{0}-{1}'.format(year, month)
-    begin_timestamp = datetime.strptime(begin_date, '%Y-%m').timestamp() * 1000
-    end_date = '{0}-{1}'.format(year, month + 1)
-    end_timestamp = datetime.strptime(end_date, '%Y-%m').timestamp() * 1000
+    begin_date = datetime.strptime('{0}-{1}'.format(year, month), '%Y-%m')
+    begin_timestamp = begin_date.timestamp() * 1000
+    days = calendar.monthrange(year, month)[1]
+    end_date = begin_date + timedelta(days=days)
+    end_timestamp = end_date.timestamp() * 1000
 
     sql = "select user.email, saveFlowDay.port as port, sum(saveFlowDay.flow)/1000000000.0 as flow from saveFlowDay " \
           "inner join account_plugin on saveFlowDay.accountId==account_plugin.id " \
